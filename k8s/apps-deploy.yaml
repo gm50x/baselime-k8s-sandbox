@@ -4,8 +4,6 @@ metadata:
   name: marco
   labels:
     fluentd.logger: "true"
-  annotations:
-    originated: "yes"
 spec:
   replicas: 1
   selector:
@@ -13,8 +11,6 @@ spec:
       app: marco
   template:
     metadata:
-      annotations:
-        originated: "no"
       labels:
         app: marco
         fluentd.logger: "true"
@@ -37,15 +33,13 @@ spec:
               value: "json"
             - name: SERVICE_NAME
               value: "marco"
-            - name: INSPECT_HTTP_TRAFFIC
-              value: "all"
             - name: ROUTE_PREFIX
               value: "marco"
             - name: AMQP_URL
-              value: "amqps://nxxmdywn:DkttMGi8x3iCgucD81esA3XXpoNB5W7L@porpoise.rmq.cloudamqp.com/nxxmdywn"
-            - name: BASE_URL_MARCO_SERVICE
+              value: "amqp://gedai:gedai@rabbitmq-loadbalancer-srv:5672"
+            - name: MARCO_URL
               value: "http://marco-service:3000/marco"
-            - name: BASE_URL_POLO_SERVICE
+            - name: POLO_URL
               value: "http://polo-service:3000/polo"
           ports:
             - containerPort: 3000
@@ -61,6 +55,67 @@ spec:
     app: marco
   ports:
     - name: marco-http
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polo
+  labels:
+    fluentd.logger: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: polo
+  template:
+    metadata:
+      labels:
+        app: polo
+        fluentd.logger: "true"
+    spec:
+      containers:
+        - name: polo-app
+          image: gm50x/polo
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          env:
+            - name: PORT
+              value: "3000"
+            - name: NODE_ENV
+              value: "staging"
+            - name: LOG_LEVEL
+              value: "debug"
+            - name: LOG_FORMAT
+              value: "json"
+            - name: SERVICE_NAME
+              value: "polo"
+            - name: ROUTE_PREFIX
+              value: "polo"
+            - name: AMQP_URL
+              value: "amqp://gedai:gedai@rabbitmq-loadbalancer-srv:5672"
+            - name: MARCO_URL
+              value: "http://marco-service:3000/marco"
+            - name: POLO_URL
+              value: "http://polo-service:3000/polo"
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polo-service
+spec:
+  type: ClusterIP
+  selector:
+    app: polo
+  ports:
+    - name: polo-http
       protocol: TCP
       port: 3000
       targetPort: 3000

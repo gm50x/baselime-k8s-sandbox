@@ -22,9 +22,10 @@ services:
     environment:
       LOG_FORMAT: 'pretty'
       LOG_LEVEL: 'debug'
+      PORT: '3000'
       AMQP_URL: 'amqp://gedai:gedai@rabbitmq:5672'
       MARCO_URL: 'http://marco:3000'
-      POLO_URL: 'http://polo:4000'
+      POLO_URL: 'http://polo:3000'
     ports:
       - 3000:3000
   polo:
@@ -37,6 +38,7 @@ services:
     environment:
       LOG_FORMAT: 'pretty'
       LOG_LEVEL: 'debug'
+      PORT: '3000'
       AMQP_URL: 'amqp://gedai:gedai@rabbitmq:5672'
       MARCO_URL: 'http://marco:3000'
       POLO_URL: 'http://polo:3000'
