@@ -34,13 +34,13 @@ spec:
             - name: SERVICE_NAME
               value: "marco"
             - name: ROUTE_PREFIX
-              value: "marco"
+              value: "api/marco"
             - name: AMQP_URL
               value: "amqp://gedai:gedai@rabbitmq-loadbalancer-srv:5672"
             - name: MARCO_URL
-              value: "http://marco-service:3000/marco"
+              value: "http://marco-service:3000/api/marco"
             - name: POLO_URL
-              value: "http://polo-service:3000/polo"
+              value: "http://polo-service:3000/api/polo"
           ports:
             - containerPort: 3000
 
@@ -95,13 +95,13 @@ spec:
             - name: SERVICE_NAME
               value: "polo"
             - name: ROUTE_PREFIX
-              value: "polo"
+              value: "api/polo"
             - name: AMQP_URL
               value: "amqp://gedai:gedai@rabbitmq-loadbalancer-srv:5672"
             - name: MARCO_URL
-              value: "http://marco-service:3000/marco"
+              value: "http://marco-service:3000/api/marco"
             - name: POLO_URL
-              value: "http://polo-service:3000/polo"
+              value: "http://polo-service:3000/api/polo"
           ports:
             - containerPort: 3000
 

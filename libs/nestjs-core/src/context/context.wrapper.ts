@@ -55,7 +55,7 @@ export class ContextWrapper implements NestMiddleware, NestMiddleware {
     const { middlewareSetup: mountMiddlewareFromModule = () => null } =
       this.options;
     const store = this.context.getContextOrDefault();
-    const id = req.get('x-context-id');
+    const id = req.get('x-trace-id');
     mountMiddlewareFromModule(store, req);
     this.addTraceOrDefault(store, id);
     this.context.run(store, async () => next());

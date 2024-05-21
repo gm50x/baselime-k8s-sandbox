@@ -1,27 +1,63 @@
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: ingress-srv
+#   annotations:
+#     ingress.kubernetes.io/ssl-redirect: "false"
+#     nginx.ingress.kubernetes.io/use-regex: "true"
+
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#     - http:
+#         paths:
+#           - pathType: Prefix
+#             path: "/api/marco"
+#             backend:
+#               service:
+#                 name: marco-service
+#                 port:
+#                   number: 3000
+#           - pathType: Prefix
+#             path: "/api/polo"
+#             backend:
+#               service:
+#                 name: polo-service
+#                 port:
+#                   number: 3000
+
+# kubectl create deployment nginx --image=nginx
+# kubectl create service clusterip nginx --tcp=80:80
+
+# apiVersion: networking.k8s.io/v1beta1 # for k3s < v1.19
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-srv
+  name: nginx
   annotations:
     ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-
 spec:
-  ingressClassName: nginx
   rules:
-    - http:
-        paths:
-          - pathType: Prefix
-            path: "/api/marco"
-            backend:
-              service:
-                name: marco-service
-                port:
-                  number: 3000
-          - pathType: Prefix
-            path: "/api/polo"
-            backend:
-              service:
-                name: polo-service
-                port:
-                  number: 3000
+  - http:
+      paths:
+      - path: "/api/marco"
+        pathType: Prefix
+        backend:
+          service:
+            name: marco-service
+            port:
+              number: 3000
+      - path: "/api/polo"
+        pathType: Prefix
+        backend:
+          service:
+            name: polo-service
+            port:
+              number: 3000
+      - path: /nginx
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
