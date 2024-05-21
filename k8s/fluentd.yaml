@@ -78,7 +78,7 @@ data:
       <record>
         message ${record["log"]["message"]}
         service ${record["log"]["service"]}
-        requestId ${record["log"]["traceId"]}
+        requestId ${record["log"]["contextId"]}
         namespace ${record["log"]["service"]}
         timestamp ${(Time.parse(record["log"]["timestamp"]).utc.to_i).to_s}
         duration ${record["log"]["duration"]}

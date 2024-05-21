@@ -6,16 +6,16 @@ export enum ContextKeys {
 }
 
 export class Context {
-  constructor(private readonly state: Map<string, any>) {
-    this.setId(randomUUID());
-  }
+  constructor(private readonly state: Map<string, any>) {}
 
   /**
    * Creates a new context object
    */
   static createNew() {
     const state = new Map<string, any>();
-    return new Context(state);
+    const context = new Context(state);
+    context.setId(randomUUID());
+    return context;
   }
 
   /**

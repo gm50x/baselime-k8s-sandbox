@@ -47,10 +47,10 @@ export class AmqpService {
   }
 
   private factoryHeaders(headers?: MessageProperties['headers']) {
-    const traceId = this.contextService.getId();
+    const traceId = this.contextService.getTrace();
     return {
       ...(headers ?? {}),
-      'x-context-id': headers?.['x-context-id'] ?? traceId,
+      'x-trace-id': headers?.['x-trace-id'] ?? traceId,
     };
   }
 

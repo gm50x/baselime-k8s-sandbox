@@ -71,7 +71,7 @@ export const AmqpSubscription = ({
       // TODO: not sure I like this approach
       interceptorSetup: (context, executionContext) => {
         const message = executionContext.switchToRpc().getContext<Message>();
-        const id = message.properties?.headers?.['x-context-id'];
+        const id = message.properties?.headers?.['x-trace-id'];
         context.setTrace(id);
       },
     }),
