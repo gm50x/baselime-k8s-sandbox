@@ -22,7 +22,12 @@ export class AppController {
 
   @Post('hello')
   @TracedMetadata([{ name: 'namespace', value: 'hello' }])
-  async hello() {
-    this.logger.log('Hello From Marco!');
+  async hello(@Body() data: any) {
+    if (data.error) {
+      this.logger.error('Throwing an error 😎');
+      throw new Error(data.error);
+    }
+
+    this.logger.log('Hello From Marco! 😁');
   }
 }

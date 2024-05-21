@@ -8,6 +8,7 @@ export class AppSubscription {
     exchange: 'event.root',
     queue: 'polo-consumer',
     routingKey: 'hello.polo',
+    channel: 'consumer1',
   })
   @TracedMetadata([{ name: 'namespace', value: 'consume-my-message' }])
   async consume() {

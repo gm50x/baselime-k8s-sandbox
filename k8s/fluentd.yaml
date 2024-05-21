@@ -77,28 +77,16 @@ data:
       enable_ruby
       <record>
         message ${record["log"]["message"]}
-        service ${record["log"]["service"]}
+        service ${record["log"]["appName"]}
         requestId ${record["log"]["contextId"]}
-        namespace ${record["log"]["service"]}
+        namespace ${record["log"]["namespace"]}
         timestamp ${(Time.parse(record["log"]["timestamp"]).utc.to_i).to_s}
         duration ${record["log"]["duration"]}
+        LogLevel ${record["log"]["level"]}
       </record>
     </filter>
     <match kubernetes.**>
       @type copy
-      <store>
-        @type http
-        endpoint https://01hyc6q3xz56n97tce5gb03zte00-a4685ffecfbae9fe1e6a.requestinspector.com
-        headers {"x-api-key":"xdummy", "baselime-data-source": "fluentd/k8s"}
-        open_timeout 2
-        json_array true
-        <format>
-          @type json
-        </format>
-        <buffer>
-          flush_interval 5s
-        </buffer>
-      </store>
 
       <store>
         @type http
