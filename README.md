@@ -1,5 +1,8 @@
 ## Baselime Fluentd K8S Integration Example
+
 Capturing Container Logs from K8S with FluentD and Injecting to Baselime.IO Via HTTP
+
+In this example we have two services that will communicate via HTTP and AMQP. Marco and Polo, both exposed in the k8s ingress.
 
 Install K3D: https://k3d.io/v5.6.3/#installation
 Create Kubernetes Cluster:
