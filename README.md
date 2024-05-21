@@ -1,4 +1,4 @@
-## Baselime Fluentd K8S Integration Example
+## Baselime Observability K8S Integration Example
 
 Capturing Container Logs from K8S with FluentD and Injecting to Baselime.IO Via HTTP
 
