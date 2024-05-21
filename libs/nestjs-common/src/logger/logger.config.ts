@@ -9,12 +9,13 @@ import { config, format, transports } from 'winston';
 import { MODULE_OPTIONS_TOKEN } from '../common-config.builder';
 import { CommonConfigModuleOptions } from '../common-config.options';
 import { configureOutboundHttpTracePropagation } from './http-tracing.propagator';
+import { configureMetadataInterceptor } from './metadata.interceptor';
 import { Obfuscator, RegExpObfuscator } from './obfuscator';
 
 let contextService: ContextService;
 let anonymizer: Obfuscator;
 let env: string;
-let serviceName: string;
+let appName: string;
 
 const { Console } = transports;
 const { combine, timestamp, json } = format;
@@ -47,14 +48,17 @@ const sensitive = () =>
     return obfuscated;
   })();
 
-const environment = () =>
+const metadata = () =>
   format((info) => {
-    return { ...info, env };
-  })();
-
-const service = () =>
-  format((info) => {
-    return { ...info, service: serviceName };
+    const meta =
+      contextService.get<{ name: string; value: string }[]>(
+        '__TracedMetadata__',
+      ) ?? [];
+    const values = meta.reduce(
+      (acc, { name, value }) => ({ ...acc, [name]: value }),
+      {},
+    );
+    return { ...info, appName, env, ...values };
   })();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -77,9 +81,9 @@ const treatError = format(({ stack: _stack, error, ...info }) => {
 
 const jsonFormat = () =>
   combine(
+    // KEEP STYLE
     timestamp(),
-    environment(),
-    service(),
+    metadata(),
     trace(),
     treatError(),
     sensitive(),
@@ -89,18 +93,17 @@ const jsonFormat = () =>
 const prettyFormat = () =>
   combine(
     timestamp(),
-    environment(),
-    service(),
+    metadata(),
     trace(),
     treatError(),
     sensitive(),
-    nestLike(serviceName),
+    nestLike(appName),
   );
 
 export const configureLogger = (app: INestApplication) => {
   const options = app.get<CommonConfigModuleOptions>(MODULE_OPTIONS_TOKEN);
   const {
-    appName = 'unknown-app',
+    appName: _appName = 'unknown-app',
     environment = 'production',
     logger: loggerConfig = {},
   } = options;
@@ -123,7 +126,7 @@ export const configureLogger = (app: INestApplication) => {
   const usePrettyFormat = format === 'pretty';
 
   env = environment;
-  serviceName = appName;
+  appName = _appName;
   const winstonConfig: WinstonModuleOptions = {
     silent,
     levels: config.npm.levels,
@@ -133,6 +136,7 @@ export const configureLogger = (app: INestApplication) => {
   };
   const logger = WinstonModule.createLogger(winstonConfig);
   app.useLogger(logger);
+  configureMetadataInterceptor(app);
   configureOutboundHttpTracePropagation(app);
   Logger.log('Logger initialized', '@gedai/common/config');
   return app;

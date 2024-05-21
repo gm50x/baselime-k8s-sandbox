@@ -1,4 +1,5 @@
 import { AmqpSubscription } from '@gedai/nestjs-amqp';
+import { TracedMetadata } from '@gedai/nestjs-common';
 import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
@@ -8,6 +9,7 @@ export class AppSubscription {
     queue: 'marco-consumer',
     routingKey: 'hello.marco',
   })
+  @TracedMetadata([{ name: 'namespace', value: 'consume-my-message' }])
   async consume() {
     Logger.log('got a message');
   }

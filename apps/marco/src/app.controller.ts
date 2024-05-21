@@ -1,3 +1,4 @@
+import { TracedMetadata } from '@gedai/nestjs-common';
 import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 
@@ -8,16 +9,19 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('http')
+  @TracedMetadata([{ name: 'namespace', value: 'hello-http' }])
   async postHelloHttp(@Body() data: any) {
     await this.appService.helloPoloHttp(data);
   }
 
   @Post('amqp')
+  @TracedMetadata([{ name: 'namespace', value: 'hello-amqp' }])
   async postHelloAmqp(@Body() data: any) {
     await this.appService.helloPoloAmqp(data);
   }
 
   @Post('hello')
+  @TracedMetadata([{ name: 'namespace', value: 'hello' }])
   async hello() {
     this.logger.log('Hello From Marco!');
   }
