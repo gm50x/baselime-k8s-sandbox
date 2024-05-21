@@ -103,7 +103,7 @@ data:
       <store>
         @type http
         endpoint https://events.baselime.io/v1/logs
-        headers {"x-api-key":"cf36e14431716f3dd122d7cdb0b36a41463bde91", "baselime-data-source": "fluentd"}
+        headers {"x-api-key":"YOUR_API_KEY", "baselime-data-source": "fluentd"}
         open_timeout 2
         json_array true
         <format>
