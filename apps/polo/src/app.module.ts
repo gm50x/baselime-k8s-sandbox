@@ -6,6 +6,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AppSubscription } from './app.subscription';
 
 @Module({
   imports: [
@@ -17,8 +18,8 @@ import { AppService } from './app.service';
       useFactory: (config: ConfigService) => ({
         url: config.get('AMQP_URL'),
         exchanges: [
+          // KEEP STYLE
           { name: 'event.root' },
-          //
         ],
         trafficInspection: { mode: 'all' },
       }),
@@ -29,6 +30,7 @@ import { AppService } from './app.service';
         appName: config.get('SERVICE_NAME', 'polo-local'),
         environment: config.get('NODE_ENV', 'development'),
         httpTrafficInspection: { mode: 'all' },
+        routePrefix: config.get('ROUTE_PREFIX', ''),
         logger: {
           format: config.get('LOG_FORMAT', 'json'),
           level: config.get('LOG_LEVEL', 'info'),
@@ -37,6 +39,6 @@ import { AppService } from './app.service';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppSubscription],
 })
 export class AppModule {}

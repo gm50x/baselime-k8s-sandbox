@@ -7,17 +7,17 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('http')
-  postHelloPoloHttp(@Body() data: any) {
-    this.appService.helloPoloHttp(data);
+  async postHelloHttp(@Body() data: any) {
+    await this.appService.helloMarcoHttp(data);
   }
 
   @Post('amqp')
-  postHelloPoloAmqp(@Body() data: any) {
-    this.appService.helloPoloAmqp(data);
+  async postHelloAmqp(@Body() data: any) {
+    await this.appService.helloMarcoAmqp(data);
   }
 
   @Post('hello')
   async hello() {
-    this.logger.log('Hello!');
+    this.logger.log('Hello From Polo!');
   }
 }

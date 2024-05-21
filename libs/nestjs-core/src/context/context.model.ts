@@ -1,10 +1,14 @@
+import { randomUUID } from 'crypto';
+
 export enum ContextKeys {
   ContextId = '__ContextId__',
   TraceId = '__TraceId__',
 }
 
 export class Context {
-  constructor(private readonly state: Map<string, any>) {}
+  constructor(private readonly state: Map<string, any>) {
+    this.setId(randomUUID());
+  }
 
   /**
    * Creates a new context object
@@ -31,7 +35,7 @@ export class Context {
   /**
    * Get the context id
    */
-  setId(id: string) {
+  private setId(id: string) {
     return this.state.set(ContextKeys.ContextId, id);
   }
 

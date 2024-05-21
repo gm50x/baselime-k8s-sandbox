@@ -1,8 +1,11 @@
 import { createNestApp } from '@gedai/nestjs-common';
+import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await createNestApp(AppModule, { bufferLogs: false });
-  await app.listen(4000);
+  const config = app.get(ConfigService);
+  const port = config.get('PORT', '4000');
+  await app.listen(port);
 }
 bootstrap();

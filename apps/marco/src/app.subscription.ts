@@ -1,8 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { AmqpSubscription } from '@gedai/nestjs-amqp';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
-export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+export class AppSubscription {
+  @AmqpSubscription({
+    exchange: 'event.root',
+    queue: 'marco-consumer',
+    routingKey: 'hello.marco',
+  })
+  async consume() {
+    Logger.log('got a message');
   }
 }

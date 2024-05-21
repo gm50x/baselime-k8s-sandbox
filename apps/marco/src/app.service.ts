@@ -17,7 +17,7 @@ export class AppService {
 
   async helloPoloHttp(data: any) {
     const poloURL = this.config.get('POLO_URL');
-    await this.http.axiosRef.post(`${poloURL}/hellox`, data);
+    await this.http.axiosRef.post(`${poloURL}/hello`, data);
   }
 
   async helloMarcoAmqp(data: any) {

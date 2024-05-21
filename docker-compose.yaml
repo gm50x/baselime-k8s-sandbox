@@ -12,3 +12,33 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+  marco:
+    image: gm50x/marco
+    build:
+      context: .
+      args:
+        target: marco
+    container_name: marco-cr
+    environment:
+      LOG_FORMAT: 'pretty'
+      LOG_LEVEL: 'debug'
+      AMQP_URL: 'amqp://gedai:gedai@rabbitmq:5672'
+      MARCO_URL: 'http://marco:3000'
+      POLO_URL: 'http://polo:4000'
+    ports:
+      - 3000:3000
+  polo:
+    image: gm50x/polo
+    build:
+      context: .
+      args:
+        target: polo
+    container_name: polo-cr
+    environment:
+      LOG_FORMAT: 'pretty'
+      LOG_LEVEL: 'debug'
+      AMQP_URL: 'amqp://gedai:gedai@rabbitmq:5672'
+      MARCO_URL: 'http://marco:3000'
+      POLO_URL: 'http://polo:3000'
+    ports:
+      - 4000:3000
