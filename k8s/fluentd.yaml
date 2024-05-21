@@ -1,0 +1,173 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fluentd
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fluentd
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: fluentd
+roleRef:
+  kind: ClusterRole
+  name: fluentd
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: fluentd
+    namespace: kube-system
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: kube-system
+  name: fluentd-config
+data:
+  fluent.conf: |
+    <source>
+      @type tail
+      path /var/log/containers/*.log
+      exclude_path ["/var/log/containers/fluentd-*.log"]
+      pos_file /var/log/fluentd-containers.log.pos
+      tag kubernetes.**
+      read_from_head true
+      <parse>
+        @type regexp
+        expression /(?<log>\{.*\})$/
+      </parse>
+    </source>
+
+    <filter kubernetes.**>
+      @type kubernetes_metadata
+    </filter>
+
+    <filter kubernetes.**>
+      @type grep
+      regexp1 $.kubernetes.labels.fluentd_logger true
+    </filter>
+
+    <filter kubernetes.**>
+      @type parser
+      key_name log
+      reserve_data true
+      hash_value_field log
+      <parse>
+        @type json
+      </parse>
+    </filter>
+
+    <filter kubernetes.**>
+      @type record_transformer
+      enable_ruby
+      <record>
+        hostname "#{Socket.gethostname}"
+        message ${record["log"]["message"]}
+        service ${record["log"]["service"]}
+        requestId ${record["log"]["traceId"]}
+        namespace ${record["log"]["service"]}
+      </record>
+    </filter>
+
+    <match kubernetes.**>
+      @type copy
+      <store>
+        @type http
+        endpoint https://01hyc6q3xz56n97tce5gb03zte00-a4685ffecfbae9fe1e6a.requestinspector.com
+        headers {"x-api-key":"xdummy", "baselime-data-source": "fluentd/k8s"}
+        open_timeout 2
+        json_array true
+        <format>
+          @type json
+        </format>
+        <buffer>
+          flush_interval 5s
+        </buffer>
+      </store>
+
+      <store>
+        @type http
+        endpoint https://events.baselime.io/v1/logs
+        headers {"x-api-key":"f11a1c0da591050f52ac7458e4f2e7e1a41138d0", "baselime-data-source": "fluentd"}
+        open_timeout 2
+        json_array true
+        <format>
+          @type json
+        </format>
+        <buffer>
+          flush_interval 5s
+        </buffer>
+      </store>
+
+      <store>
+        @type stdout
+      </store>
+    </match>
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: kube-system
+  labels:
+    k8s-app: fluentd-logging
+    version: v1
+spec:
+  selector:
+    matchLabels:
+      k8s-app: fluentd-logging
+      version: v1
+  template:
+    metadata:
+      labels:
+        k8s-app: fluentd-logging
+        version: v1
+    spec:
+      serviceAccount: fluentd
+      serviceAccountName: fluentd
+      containers:
+        - name: logger
+          image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.1
+          env:
+            - name: FLUENTD_ARGS
+              value: -c /fluentd/etc/fluent.conf
+          volumeMounts:
+            - mountPath: /fluentd/etc
+              name: config-volume
+            - name: varlog
+              mountPath: /var/log
+            - name: dockercontainerlogdirectory
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: config-volume
+          configMap:
+            name: fluentd-config
+            items:
+              - key: fluent.conf
+                path: fluent.conf
+        # - name: dockercontainerlogdirectory
+        #   hostPath:
+        #     path: /var/lib/docker/containers
+        - name: dockercontainerlogdirectory
+          hostPath:
+            path: /var/log/pods

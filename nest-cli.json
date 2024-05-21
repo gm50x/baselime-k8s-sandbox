@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/lui/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/lui/tsconfig.app.json"
+  },
+  "projects": {
+    "nestjs-core": {
+      "type": "library",
+      "root": "libs/nestjs-core",
+      "entryFile": "index",
+      "sourceRoot": "libs/nestjs-core/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/nestjs-core/tsconfig.lib.json"
+      }
+    },
+    "nestjs-common": {
+      "type": "library",
+      "root": "libs/nestjs-common",
+      "entryFile": "index",
+      "sourceRoot": "libs/nestjs-common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/nestjs-common/tsconfig.lib.json"
+      }
+    },
+    "nestjs-amqp": {
+      "type": "library",
+      "root": "libs/nestjs-amqp",
+      "entryFile": "index",
+      "sourceRoot": "libs/nestjs-amqp/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/nestjs-amqp/tsconfig.lib.json"
+      }
+    },
+    "lui": {
+      "type": "application",
+      "root": "apps/lui",
+      "entryFile": "main",
+      "sourceRoot": "apps/lui/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/lui/tsconfig.app.json"
+      }
+    },
+    "marco": {
+      "type": "application",
+      "root": "apps/marco",
+      "entryFile": "main",
+      "sourceRoot": "apps/marco/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/marco/tsconfig.app.json"
+      }
+    },
+    "polo": {
+      "type": "application",
+      "root": "apps/polo",
+      "entryFile": "main",
+      "sourceRoot": "apps/polo/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/polo/tsconfig.app.json"
+      }
+    },
+    "nestjs-otel": {
+      "type": "library",
+      "root": "libs/nestjs-otel",
+      "entryFile": "index",
+      "sourceRoot": "libs/nestjs-otel/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/nestjs-otel/tsconfig.lib.json"
+      }
+    }
+  },
+  "monorepo": true,
+  "root": "apps/lui"
+}

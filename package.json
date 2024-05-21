@@ -1,0 +1,101 @@
+{
+  "name": "lui",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "nest build",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./apps/lui/test/jest-e2e.json"
+  },
+  "dependencies": {
+    "@golevelup/nestjs-rabbitmq": "^5.3.0",
+    "@nestjs/axios": "^3.0.2",
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.2.2",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/microservices": "^10.3.8",
+    "@nestjs/platform-express": "^10.0.0",
+    "@opentelemetry/exporter-metrics-otlp-grpc": "^0.51.1",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.51.1",
+    "@opentelemetry/instrumentation-amqplib": "^0.37.0",
+    "@opentelemetry/instrumentation-express": "^0.39.0",
+    "@opentelemetry/instrumentation-http": "^0.51.1",
+    "@opentelemetry/instrumentation-mongoose": "^0.38.1",
+    "@opentelemetry/instrumentation-nestjs-core": "^0.37.1",
+    "@opentelemetry/instrumentation-winston": "^0.37.0",
+    "@opentelemetry/sdk-node": "^0.51.1",
+    "axios": "^1.7.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "compression": "^1.7.4",
+    "helmet": "^7.1.0",
+    "nest-winston": "^1.9.6",
+    "nestjs-otel": "^6.1.0",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.8.1",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.0.0",
+    "@nestjs/schematics": "^10.0.0",
+    "@nestjs/testing": "^10.0.0",
+    "@types/compression": "^1.7.5",
+    "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.3.1",
+    "@types/supertest": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.42.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.5.0",
+    "prettier": "^3.0.0",
+    "source-map-support": "^0.5.21",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.0",
+    "ts-loader": "^9.4.3",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.3"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": ".",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/libs/",
+      "<rootDir>/apps/"
+    ],
+    "moduleNameMapper": {
+      "^@gedai/nestjs-core(|/.*)$": "<rootDir>/libs/nestjs-core/src/$1",
+      "^@gedai/nestjs-common(|/.*)$": "<rootDir>/libs/nestjs-common/src/$1",
+      "^@gedai/nestjs-amqp(|/.*)$": "<rootDir>/libs/nestjs-amqp/src/$1",
+      "^@gedai/nestjs-otel(|/.*)$": "<rootDir>/libs/nestjs-otel/src/$1"
+    }
+  }
+}

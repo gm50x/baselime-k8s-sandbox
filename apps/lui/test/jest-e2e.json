@@ -1,0 +1,21 @@
+{
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@gedai/nestjs-core/(.*)": "<rootDir>/../libs/nestjs-core/src/$1",
+    "@gedai/nestjs-core": "<rootDir>/../libs/nestjs-core/src",
+    "@gedai/nestjs-common/(.*)": "<rootDir>/../libs/nestjs-common/src/$1",
+    "@gedai/nestjs-common": "<rootDir>/../libs/nestjs-common/src",
+    "@gedai/nestjs-amqp/(.*)": "<rootDir>/../libs/nestjs-amqp/src/$1",
+    "@gedai/nestjs-amqp": "<rootDir>/../libs/nestjs-amqp/src"
+  }
+}

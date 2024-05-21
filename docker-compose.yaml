@@ -1,0 +1,14 @@
+services:
+  rabbitmq:
+    image: gm50x/rabbitmq:3-management-delayed
+    build:
+      context: ./localstack
+      dockerfile: ./Dockerfile.rabbitmq
+    container_name: 'gedai-rabbitmq'
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: 'gedai'
+      RABBITMQ_DEFAULT_PASS: 'gedai'
+    ports:
+      - 5672:5672
+      - 15672:15672
