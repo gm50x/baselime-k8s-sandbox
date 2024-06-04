@@ -5,8 +5,7 @@ import { CommonConfigModuleOptions } from '../common-config.options';
 
 export const configureHelmet = (app: INestApplication) => {
   const options = app.get<CommonConfigModuleOptions>(MODULE_OPTIONS_TOKEN);
-
-  app.use(helmet(options.helmet));
+  app.use(helmet({ ...options.helmet }));
   Logger.log('Server security initialized', '@gedai/common/config');
   return app;
 };

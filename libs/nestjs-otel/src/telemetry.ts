@@ -1,7 +1,6 @@
 import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
-import { HostMetrics } from '@opentelemetry/host-metrics';
 import { AmqplibInstrumentation } from '@opentelemetry/instrumentation-amqplib';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
@@ -23,30 +22,32 @@ import { randomInt } from 'crypto';
 import * as process from 'process';
 import { Subject, tap } from 'rxjs';
 
-const { ENABLE_OTEL, BASE_URL_OTEL_COLLECTOR, SERVICE_NAME, HOSTNAME } =
-  process.env;
+const {
+  ENABLE_OTEL,
+  BASE_URL_OTEL_COLLECTOR,
+  API_KEY_OTEL_COLLECTOR,
+  SERVICE_NAME,
+  HOSTNAME,
+} = process.env;
 
+console.log({ ENABLE_OTEL });
 if (ENABLE_OTEL === 'true') {
   /** IF USING GPRC */
+
+  console.log({ BASE_URL_OTEL_COLLECTOR, API_KEY_OTEL_COLLECTOR });
   const traceExporter = new OTLPTraceExporter({
     url: BASE_URL_OTEL_COLLECTOR,
+    headers: {
+      'x-api-key': API_KEY_OTEL_COLLECTOR,
+    },
   });
+
   const metricExporter = new OTLPMetricExporter({
     url: BASE_URL_OTEL_COLLECTOR,
+    headers: {
+      'x-api-key': API_KEY_OTEL_COLLECTOR,
+    },
   });
-  // const traceExporter = new OTLPTraceExporter({
-  //   url: 'http://otel-collector:4317',
-  // });
-  // const metricExporter = new OTLPMetricExporter({
-  //   url: 'http://otel-collector:4317',
-  // });
-  /** IF USING HTTP */
-  // const traceExporter = new OTLPTraceExporter({
-  //   url: 'http://otel-collector:4318/v1/traces',
-  // });
-  // const metricExporter = new OTLPMetricExporter({
-  //   url: 'http://otel-collector:4318/v1/metrics',
-  // });
 
   const resource = new Resource({
     [SEMRESATTRS_SERVICE_NAME]: SERVICE_NAME || 'unknown-service',
@@ -62,10 +63,11 @@ if (ENABLE_OTEL === 'true') {
     ],
   });
 
-  const hostMetrics = new HostMetrics({
-    name: 'lui-example-host-metrics',
-    meterProvider,
-  });
+  // THIS POLUTES TOO MUCH
+  // const hostMetrics = new HostMetrics({
+  //   name: 'lui-example-host-metrics',
+  //   meterProvider,
+  // });
 
   setTimeout(() => {
     /** TODO: This is a test and must be removed and cleaned up */
@@ -126,7 +128,32 @@ if (ENABLE_OTEL === 'true') {
   });
 
   otelSDK.start();
-  hostMetrics.start();
+  // TODO: HOSTMETRICS DISABLED
+  // hostMetrics.start();
+
+  // process.on('SIGTERM', () => {
+  //   otelSDK
+  //     .shutdown()
+  //     .then(
+  //       () =>
+  //         console.log(
+  //           JSON.stringify({
+  //             message: 'SDK shut down successfully 🚀',
+  //             timestamp: new Date(),
+  //           }),
+  //         ),
+  //       (err) =>
+  //         console.error(
+  //           JSON.stringify({
+  //             message: 'Error shuttind down sdk 🚀',
+  //             error: { message: err.message, stack: err.stack },
+  //             timestamp: new Date(),
+  //           }),
+  //         ),
+  //     )
+  //     .finally(() => process.exit(0));
+  // });
+  // }
 
   process.on('SIGTERM', () => {
     meterProvider
@@ -143,13 +170,17 @@ if (ENABLE_OTEL === 'true') {
         otelSDK.shutdown().then(
           () =>
             console.log(
-              JSON.stringify({ message: 'SDK shut down successfully 🚀' }),
+              JSON.stringify({
+                message: 'SDK shut down successfully 🚀',
+                timestamp: new Date(),
+              }),
             ),
           (err) =>
             console.error(
               JSON.stringify({
                 message: 'Error shuttind down sdk 🚀',
                 error: { message: err.message, stack: err.stack },
+                timestamp: new Date(),
               }),
             ),
         ),

@@ -43,10 +43,13 @@ export class ContextWrapper implements NestMiddleware, NestMiddleware {
     }
   }
 
-  private addTraceOrDefault(store: Context, existingId: string = randomUUID()) {
-    const id = store.getTrace();
+  private addCorrelationOrDefault(
+    store: Context,
+    existingId: string = randomUUID(),
+  ) {
+    const id = store.getCorrelationId();
     if (!id) {
-      store.setTrace(existingId);
+      store.setCorrelationId(existingId);
     }
   }
 
@@ -55,9 +58,10 @@ export class ContextWrapper implements NestMiddleware, NestMiddleware {
     const { middlewareSetup: mountMiddlewareFromModule = () => null } =
       this.options;
     const store = this.context.getContextOrDefault();
-    const id = req.get('x-trace-id');
+    store.setId(randomUUID());
+    const id = req.get('x-correlation-id');
     mountMiddlewareFromModule(store, req);
-    this.addTraceOrDefault(store, id);
+    this.addCorrelationOrDefault(store, id);
     this.context.run(store, async () => next());
   }
 
@@ -73,6 +77,7 @@ export class ContextWrapper implements NestMiddleware, NestMiddleware {
     const { interceptorSetup: mountInterceptorFromModule = fallbackSetup } =
       this.options;
     const context = this.context.getContextOrDefault();
+    context.setId(randomUUID());
     const { interceptorSetup: mountInterceptorFromDecorator = fallbackSetup } =
       this.reflector.get<ReloadContextMetadata>(
         KEY,
@@ -85,7 +90,7 @@ export class ContextWrapper implements NestMiddleware, NestMiddleware {
      * We expose interface, dependant libs implement it.
      */
     mountInterceptorFromDecorator(context, executionContext);
-    this.addTraceOrDefault(context, context.getId());
+    this.addCorrelationOrDefault(context, context.getId());
     return new Observable((subscriber) => {
       this.context.run(context, async () =>
         next

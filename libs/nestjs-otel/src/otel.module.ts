@@ -7,7 +7,7 @@ export class OtelModule {
   static forRoot() {
     return OpenTelemetryModule.forRoot({
       metrics: {
-        hostMetrics: true,
+        hostMetrics: false,
         apiMetrics: {
           enable: true,
           ignoreRoutes: ['/favicon.ico'],

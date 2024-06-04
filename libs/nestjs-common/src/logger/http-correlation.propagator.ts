@@ -3,30 +3,32 @@ import { INestApplication, Logger } from '@nestjs/common';
 import * as http from 'http';
 import * as https from 'https';
 
-function appendTraceIdToHeaders(
+function appendCorrelationIdToHeaders(
   options: http.RequestOptions,
   contextId: string,
 ) {
   if (!options.headers) {
     options.headers = {};
   }
-  options.headers['x-trace-id'] = contextId;
+  options.headers['x-correlation-id'] = contextId;
 }
 
-function mountTraceInterceptor(
+function mountCorrelationInterceptor(
   context: ContextService,
   module: typeof http | typeof https,
 ) {
-  const withTraceId = (target: typeof module.get | typeof module.request) =>
+  const withCorrelationId = (
+    target: typeof module.get | typeof module.request,
+  ) =>
     function (...args: any[]) {
-      const traceId = context.getTrace();
-      if (!traceId) {
+      const correlationId = context.getCorrelationId();
+      if (!correlationId) {
         return target.apply(this, args);
       }
       const [urlOrOptions, optionsOrCallback, maybeCallback] = args;
       // http.get(url, options, callback)
       if (typeof urlOrOptions === 'string' && maybeCallback) {
-        appendTraceIdToHeaders(optionsOrCallback, traceId);
+        appendCorrelationIdToHeaders(optionsOrCallback, correlationId);
         return target.apply(this, [
           urlOrOptions,
           optionsOrCallback,
@@ -36,11 +38,11 @@ function mountTraceInterceptor(
       // http.get(url, callback)
       if (typeof urlOrOptions === 'string') {
         const options = {};
-        appendTraceIdToHeaders(options, traceId);
+        appendCorrelationIdToHeaders(options, correlationId);
         return target.apply(this, [urlOrOptions, options, optionsOrCallback]);
       }
       // http.get(options, callback)
-      appendTraceIdToHeaders(urlOrOptions, traceId);
+      appendCorrelationIdToHeaders(urlOrOptions, correlationId);
       return target.apply(this, [urlOrOptions, optionsOrCallback]);
     };
   const targets = [
@@ -48,7 +50,7 @@ function mountTraceInterceptor(
     { target: module.request, name: 'request' },
   ];
   for (const { target, name } of targets) {
-    const tracedTarged = withTraceId(target);
+    const tracedTarged = withCorrelationId(target);
     Object.defineProperty(tracedTarged, 'name', {
       value: name,
       writable: false,
@@ -57,12 +59,12 @@ function mountTraceInterceptor(
   }
 }
 
-export const configureOutboundHttpTracePropagation = (
+export const configureOutboundHttpCorrelationPropagation = (
   app: INestApplication,
 ) => {
   const context = app.get(ContextService);
   for (const module of [http, https]) {
-    mountTraceInterceptor(context, module);
+    mountCorrelationInterceptor(context, module);
   }
   Logger.log('Http Trace Propagation initialized', '@gedai/common/config');
   return app;

@@ -1,0 +1,30 @@
+mode: deployment
+
+image:
+  repository: otel/opentelemetry-collector-k8s
+
+# We only want one of these collectors - any more and we'd produce duplicate data
+replicaCount: 1
+
+presets:
+  # enables the k8sclusterreceiver and adds it to the metrics pipelines
+  clusterMetrics:
+    enabled: true
+  # enables the k8sobjectsreceiver to collect events only and adds it to the logs pipelines
+  kubernetesEvents:
+    enabled: true
+# config for baselime otlp:
+config:
+  exporters:
+    otlp:
+      endpoint: "otel-ingest.baselime.io:4317"
+      headers:
+        x-api-key: "4b1d6e21b072d0f1c4589afab2df974cbdb3ba6f"
+  service:
+    pipelines:
+      traces:
+        exporters: [otlp]
+      metrics:
+        exporters: [otlp]
+      # logs:
+      #   exporters: [otlp]

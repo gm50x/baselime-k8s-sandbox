@@ -1,6 +1,7 @@
 import { AmqpModule } from '@gedai/nestjs-amqp';
 import { CommonConfigModule } from '@gedai/nestjs-common';
 import { ContextModule } from '@gedai/nestjs-core';
+import { OtelModule } from '@gedai/nestjs-otel';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -10,6 +11,7 @@ import { AppSubscription } from './app.subscription';
 
 @Module({
   imports: [
+    OtelModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     ContextModule.forRoot({}),
     HttpModule.register({}),

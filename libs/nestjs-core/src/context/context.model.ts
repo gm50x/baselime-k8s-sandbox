@@ -1,8 +1,6 @@
-import { randomUUID } from 'crypto';
-
 export enum ContextKeys {
   ContextId = '__ContextId__',
-  TraceId = '__TraceId__',
+  CorrelationId = '__CorrelationId__',
 }
 
 export class Context {
@@ -14,7 +12,6 @@ export class Context {
   static createNew() {
     const state = new Map<string, any>();
     const context = new Context(state);
-    context.setId(randomUUID());
     return context;
   }
 
@@ -35,22 +32,22 @@ export class Context {
   /**
    * Get the context id
    */
-  private setId(id: string) {
+  setId(id: string) {
     return this.state.set(ContextKeys.ContextId, id);
   }
 
   /**
    * Get the context id
    */
-  getTrace() {
-    return this.get<string>(ContextKeys.TraceId);
+  getCorrelationId() {
+    return this.get<string>(ContextKeys.CorrelationId);
   }
 
   /**
    * Get the context id
    */
-  setTrace(id: string) {
-    return this.state.set(ContextKeys.TraceId, id);
+  setCorrelationId(id: string) {
+    return this.state.set(ContextKeys.CorrelationId, id);
   }
 
   /**

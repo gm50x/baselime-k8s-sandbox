@@ -76,13 +76,21 @@ data:
       @type record_transformer
       enable_ruby
       <record>
-        message ${record["log"]["message"]}
-        service ${record["log"]["appName"]}
-        requestId ${record["log"]["contextId"]}
-        namespace ${record["log"]["namespace"]}
-        timestamp ${(Time.parse(record["log"]["timestamp"]).utc.to_i).to_s}
-        duration ${record["log"]["duration"]}
-        LogLevel ${record["log"]["level"]}
+        LogLevel ${record.dig("log", "level")}
+        message ${record.dig("log","message")}
+
+        service ${record.dig("log","appName")}
+        namespace ${record.dig("log","namespace")}
+        requestId ${record.dig("log", "contextId")}
+        timestamp ${record.dig("log","timestamp")}
+        
+        traceparent ${record.dig("log","traceparent")}
+        traceId ${record.dig("log","trace_id")}
+        spanId ${record.dig("log","span_id")}
+        traceFlags ${record.dig("log","trace_flags")}
+        
+        duration ${record.dig("log","duration")}
+        # timestamp ${(Time.parse(record["log"]["timestamp"]).utc.to_i).to_s}
       </record>
     </filter>
     <match kubernetes.**>
@@ -91,7 +99,7 @@ data:
       <store>
         @type http
         endpoint https://events.baselime.io/v1/logs
-        headers {"x-api-key":"YOUR_API_KEY", "baselime-data-source": "fluentd"}
+        headers {"x-api-key":"4b1d6e21b072d0f1c4589afab2df974cbdb3ba6f", "baselime-data-source": "fluentd"}
         open_timeout 2
         json_array true
         <format>

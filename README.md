@@ -37,3 +37,25 @@ Create Apps (Marco and Polo)
 ```bash
 kubectl apply -f k8s/apps-deploy.yaml
 ```
+
+## OPEN TELEMETRY
+
+ADD OTEL HELM CHARTS
+
+```bash
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+```
+
+ADD YOUR APIKEY to both `k8s/otel-daemonset.values.yaml` and `k8s/otel-deployment.values.yaml` files.
+
+Deploy the Daemonset that will capture telemetry data from nodes and workloads
+
+```bash
+helm install otel-collector open-telemetry/opentelemetry-collector --values k8s/otel-daemonset.values.yaml
+```
+
+Deploy the Deployment that will capture telemetry data the cluster
+
+```bash
+helm install otel-collector-cluster open-telemetry/opentelemetry-collector --values k8s/otel-deployment.values.yaml
+```

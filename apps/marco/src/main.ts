@@ -1,3 +1,5 @@
+import '@gedai/nestjs-otel/telemetry';
+/*RESERVED FOR TELEMETRY*/
 import { createNestApp } from '@gedai/nestjs-common';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';

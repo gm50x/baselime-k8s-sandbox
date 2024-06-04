@@ -27,10 +27,10 @@ export class ContextService {
   }
 
   /**
-   * Retrieves the current running trace id.
+   * Retrieves the current running correlation id.
    */
-  getTrace(strict = false) {
-    return this.getStore(strict).getTrace();
+  getCorrelationId(strict = false) {
+    return this.getStore(strict).getCorrelationId();
   }
 
   /**

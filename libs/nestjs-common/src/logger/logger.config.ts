@@ -8,7 +8,7 @@ import {
 import { config, format, transports } from 'winston';
 import { MODULE_OPTIONS_TOKEN } from '../common-config.builder';
 import { CommonConfigModuleOptions } from '../common-config.options';
-import { configureOutboundHttpTracePropagation } from './http-tracing.propagator';
+import { configureOutboundHttpCorrelationPropagation } from './http-correlation.propagator';
 import { configureMetadataInterceptor } from './metadata.interceptor';
 import { Obfuscator, RegExpObfuscator } from './obfuscator';
 
@@ -21,11 +21,11 @@ const { Console } = transports;
 const { combine, timestamp, json } = format;
 const { nestLike } = nestWinstonUtils.format;
 
-const trace = format((info) => {
+const correlate = format((info) => {
   const context: Context = info.error?.context ?? contextService.getContext();
   const contextId = context.getId();
-  const traceId = context.getTrace();
-  return { ...info, contextId, traceId };
+  const correlationId = context.getCorrelationId();
+  return { ...info, contextId, correlationId };
 });
 
 const commonSensitiveKeys = [
@@ -84,7 +84,7 @@ const jsonFormat = () =>
     // KEEP STYLE
     timestamp(),
     metadata(),
-    trace(),
+    correlate(),
     treatError(),
     sensitive(),
     json(),
@@ -94,7 +94,7 @@ const prettyFormat = () =>
   combine(
     timestamp(),
     metadata(),
-    trace(),
+    correlate(),
     treatError(),
     sensitive(),
     nestLike(appName),
@@ -137,7 +137,7 @@ export const configureLogger = (app: INestApplication) => {
   const logger = WinstonModule.createLogger(winstonConfig);
   app.useLogger(logger);
   configureMetadataInterceptor(app);
-  configureOutboundHttpTracePropagation(app);
+  configureOutboundHttpCorrelationPropagation(app);
   Logger.log('Logger initialized', '@gedai/common/config');
   return app;
 };
