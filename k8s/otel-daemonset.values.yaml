@@ -12,47 +12,47 @@ presets:
     enabled: true
   # Enables the filelogreceiver and adds it to the logs pipelines
   logsCollection:
-    enabled: true
+    enabled: false
 # config for baselime otlp:
 config:
   exporters:
     otlp/baselime:
       endpoint: "otel-ingest.baselime.io:4317"
       headers:
-        x-api-key: "4b1d6e21b072d0f1c4589afab2df974cbdb3ba6f"
+        x-api-key: "YOUR_API_KEY"
 
   processors:
     batch: {}
-    transform/span-status:
-      error_mode: ignore
-      trace_statements:
-        - context: span
-          statements:
-            - set(status.code, STATUS_CODE_OK) where attributes["http.status_code"] < 400
-            - set(status.code, STATUS_CODE_ERROR) where attributes["http.status_code"] >= 400
+    # transform/span-status:
+    #   error_mode: ignore
+    #   trace_statements:
+    #     - context: span
+    #       statements:
+    #         - set(status.code, STATUS_CODE_OK) where attributes["http.status_code"] < 400
+    #         - set(status.code, STATUS_CODE_ERROR) where attributes["http.status_code"] >= 400
 
-    transform/baselime-logs:
-      error_mode: ignore
-      log_statements:
-        - context: log
-          statements:
-            - merge_maps(cache, ParseJSON(body), "upsert") where IsMatch(body, "^\\{")
-            - set(attributes["LogLevel"], cache["level"])
-            - set(attributes["message"], cache["message"])
+    # transform/baselime-logs:
+    #   error_mode: ignore
+    #   log_statements:
+    #     - context: log
+    #       statements:
+    #         - merge_maps(cache, ParseJSON(body), "upsert") where IsMatch(body, "^\\{")
+    #         - set(attributes["LogLevel"], cache["level"])
+    #         - set(attributes["message"], cache["message"])
 
-            # Specific For Baselime
-            - set(attributes["requestId"], cache["contextId"])
+    #         # Specific For Baselime
+    #         - set(attributes["requestId"], cache["contextId"])
 
-            - set(attributes["traceparent"], cache["traceparent"])
-            - set(attributes["trace_id"], cache["trace_id"])
-            - set(attributes["span_id"], cache["span_id"])
-            - set(attributes["trace_flags"], cache["trace_flags"])
+    #         - set(attributes["traceparent"], cache["traceparent"])
+    #         - set(attributes["trace_id"], cache["trace_id"])
+    #         - set(attributes["span_id"], cache["span_id"])
+    #         - set(attributes["trace_flags"], cache["trace_flags"])
 
-            - set(attributes["duration"], cache["duration"])
-            - set(attributes["service"], cache["appName"])
-            - set(attributes["namespace"], cache["namespace"])
-            - set(attributes["error"], cache["error"]["message"])
-            - set(attributes["stack"], cache["error"]["stack"])
+    #         - set(attributes["duration"], cache["duration"])
+    #         - set(attributes["service"], cache["appName"])
+    #         - set(attributes["namespace"], cache["namespace"])
+    #         - set(attributes["error"], cache["error"]["message"])
+    #         - set(attributes["stack"], cache["error"]["stack"])
 
   service:
     # telemetry:
@@ -65,9 +65,9 @@ config:
       metrics:
         processors: [batch]
         exporters: [otlp/baselime]
-      logs:
-        # processors: [transform/baselime-logs, batch]
-        exporters: [otlp/baselime]
+      # logs:
+      # processors: [transform/baselime-logs, batch]
+      # exporters: [otlp/baselime]
 service:
   enabled: true
   clusterIP: None
