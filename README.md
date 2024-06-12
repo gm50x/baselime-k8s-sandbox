@@ -20,7 +20,7 @@ kubectl apply -f k8s/ingress.yaml
 ```
 
 Create FluentD Daemonset (to capture logs)
-In k8s/fluentd.yaml change x-api-key to your baselime.io apikey
+In `k8s/fluentd.yaml` change x-api-key to your baselime.io apikey
 
 ```bash
 kubectl apply -f k8s/fluentd.yaml

@@ -61,13 +61,15 @@ config:
     pipelines:
       traces:
         # processors: [transform/span-status, batch]
+        processors: [batch]
         exporters: [otlp/baselime]
       metrics:
         processors: [batch]
         exporters: [otlp/baselime]
       # logs:
-      # processors: [transform/baselime-logs, batch]
-      # exporters: [otlp/baselime]
+      #   #   processors: [transform/baselime-logs, batch]
+      #   processors: [batch]
+      #   exporters: [otlp/baselime]
 service:
   enabled: true
   clusterIP: None
