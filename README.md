@@ -1,6 +1,6 @@
 ## Baselime Observability K8S Integration Example
 
-Capturing Container Logs from K8S with FluentD and Injecting to Baselime.IO Via HTTP
+Capturing Container Logs from K8S with FluentD and sending to Baselime.IO via HTTP
 
 In this example we have two services that will communicate via HTTP and AMQP. Marco and Polo, both exposed in the k8s ingress.
 
@@ -46,15 +46,15 @@ ADD OTEL HELM CHARTS
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 ```
 
-ADD YOUR APIKEY to both `k8s/otel-daemonset.values.yaml` and `k8s/otel-deployment.values.yaml` files.
+In `k8s/otel-daemonset.values.yaml` and `k8s/otel-deployment.values.yaml` change x-api-key to your baselime.io apikey
 
-Deploy the Daemonset that will capture telemetry data from nodes and workloads
+Deploy the `Otel Daemonset` that will capture telemetry data from nodes and workloads
 
 ```bash
 helm install otel-collector open-telemetry/opentelemetry-collector --values k8s/otel-daemonset.values.yaml
 ```
 
-Deploy the Deployment that will capture telemetry data the cluster
+Deploy the `Otel Deployment` that will capture telemetry data from the cluster
 
 ```bash
 helm install otel-collector-cluster open-telemetry/opentelemetry-collector --values k8s/otel-deployment.values.yaml
