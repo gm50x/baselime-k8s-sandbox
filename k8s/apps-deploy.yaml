@@ -37,7 +37,7 @@ spec:
             - name: ROUTE_PREFIX
               value: "api/marco"
             - name: AMQP_URL
-              value: "amqp://gedai:gedai@rabbitmq-loadbalancer-srv:5672"
+              value: "amqp://gedai:gedai@rabbitmq-clusterip-srv:5672"
             - name: MARCO_URL
               value: "http://marco-service:3000/api/marco"
             - name: POLO_URL
@@ -125,7 +125,7 @@ spec:
             - name: ROUTE_PREFIX
               value: "api/polo"
             - name: AMQP_URL
-              value: "amqp://gedai:gedai@rabbitmq-loadbalancer-srv:5672"
+              value: "amqp://gedai:gedai@rabbitmq-clusterip-srv:5672"
             - name: MARCO_URL
               value: "http://marco-service:3000/api/marco"
             - name: POLO_URL
