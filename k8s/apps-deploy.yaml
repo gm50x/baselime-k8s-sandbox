@@ -1,3 +1,20 @@
+---
+# When ConfigMap changes we must rollout pods:
+# kubectl rollout restart deploy/<name>
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: common-marco-polo-config
+data:
+  PORT: "3000"
+  NODE_ENV: "staging"
+  LOG_LEVEL: "debug"
+  LOG_FORMAT: "json"
+  MARCO_URL: "http://marco-service:3000/api/marco"
+  POLO_URL: "http://polo-service:3000/api/polo"
+  ENABLE_OTEL: "true"
+  BASE_URL_OTEL_COLLECTOR: "http://otel-collector-opentelemetry-collector.default:4317"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,32 +41,55 @@ spec:
               memory: "256Mi"
               cpu: "500m"
           env:
-            - name: PORT
-              value: "3000"
-            - name: NODE_ENV
-              value: "staging"
-            - name: LOG_LEVEL
-              value: "debug"
-            - name: LOG_FORMAT
-              value: "json"
             - name: SERVICE_NAME
               value: "marco"
             - name: ROUTE_PREFIX
               value: "api/marco"
-            - name: AMQP_URL
-              value: "amqp://gedai:gedai@rabbitmq-clusterip-srv:5672"
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: PORT
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: NODE_ENV
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: LOG_LEVEL
+            - name: LOG_FORMAT
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: LOG_FORMAT
             - name: MARCO_URL
-              value: "http://marco-service:3000/api/marco"
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: MARCO_URL
             - name: POLO_URL
-              value: "http://polo-service:3000/api/polo"
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: POLO_URL
             - name: ENABLE_OTEL
-              value: "true"
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: ENABLE_OTEL
             - name: BASE_URL_OTEL_COLLECTOR
-              value: "http://otel-collector-opentelemetry-collector.default:4317"
-            # - name: BASE_URL_OTEL_COLLECTOR
-            #   value: "https://otel-ingest.baselime.io:4317"
-            # - name: API_KEY_OTEL_COLLECTOR
-            #   value: "4b1d6e21b072d0f1c4589afab2df974cbdb3ba6f"
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: BASE_URL_OTEL_COLLECTOR
+            - name: AMQP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: "rabbitmq"
+                  key: "AMQP_URL"
           ports:
             - containerPort: 3000
 
@@ -112,28 +152,55 @@ spec:
               memory: "256Mi"
               cpu: "500m"
           env:
-            - name: PORT
-              value: "3000"
-            - name: NODE_ENV
-              value: "staging"
-            - name: LOG_LEVEL
-              value: "debug"
-            - name: LOG_FORMAT
-              value: "json"
             - name: SERVICE_NAME
               value: "polo"
             - name: ROUTE_PREFIX
               value: "api/polo"
-            - name: AMQP_URL
-              value: "amqp://gedai:gedai@rabbitmq-clusterip-srv:5672"
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: PORT
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: NODE_ENV
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: LOG_LEVEL
+            - name: LOG_FORMAT
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: LOG_FORMAT
             - name: MARCO_URL
-              value: "http://marco-service:3000/api/marco"
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: MARCO_URL
             - name: POLO_URL
-              value: "http://polo-service:3000/api/polo"
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: POLO_URL
             - name: ENABLE_OTEL
-              value: "true"
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: ENABLE_OTEL
             - name: BASE_URL_OTEL_COLLECTOR
-              value: "http://otel-collector-opentelemetry-collector.default:4317"
+              valueFrom:
+                configMapKeyRef:
+                  name: "common-marco-polo-config"
+                  key: BASE_URL_OTEL_COLLECTOR
+            - name: AMQP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: "rabbitmq"
+                  key: "AMQP_URL"
           ports:
             - containerPort: 3000
 

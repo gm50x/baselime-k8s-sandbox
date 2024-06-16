@@ -67,3 +67,14 @@ spec:
                 name: rabbitmq-clusterip-srv
                 port:
                   number: 15672
+---
+## TO GET SECRET:
+## kubectl get secret rabbitmq -o json | jq ".data"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rabbitmq
+data:
+  AMQP_URL: "YW1xcDovL2dlZGFpOmdlZGFpQHJhYmJpdG1xLWNsdXN0ZXJpcC1zcnY6NTY3Mgo="
+---
+
