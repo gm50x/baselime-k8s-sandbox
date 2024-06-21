@@ -8,7 +8,12 @@ Install K3D: https://k3d.io/v5.6.3/#installation
 Create Kubernetes Cluster:
 
 ```bash
-k3d cluster create --api-port 6550 -p "7777:80@loadbalancer" sandbox --agents 1
+k3d cluster create --api-port 6550 -p "7777:80@loadbalancer" sandbox --agents 2 --volume $(pwd)/k8s/volumes:/var/lib/rancher/k3s/storage@all
+```
+
+Create a persistent volume for usage:
+```bash
+kubectl apply -f k8s/persistent-volume.yaml
 ```
 
 Create FluentD Daemonset (to capture logs)
