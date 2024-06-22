@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -9,7 +10,23 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: local-storage
+  storageClassName: rabbitmq-local-storage
   hostPath:
     type: DirectoryOrCreate
     path: /var/lib/rancher/k3s/storage/rabbitmq
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-volume
+spec:
+  capacity:
+    storage: 500Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: pg-local-storage
+  hostPath:
+    type: DirectoryOrCreate
+    path: /var/lib/rancher/k3s/storage/postgres

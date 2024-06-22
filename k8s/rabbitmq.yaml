@@ -7,7 +7,7 @@ spec:
   resources:
     requests:
       storage: 200Mi
-  storageClassName: local-storage
+  storageClassName: rabbitmq-local-storage
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
