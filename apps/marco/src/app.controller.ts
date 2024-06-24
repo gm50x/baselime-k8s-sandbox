@@ -1,5 +1,5 @@
 import { TracedMetadata } from '@gedai/nestjs-common';
-import { Body, Controller, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -29,5 +29,11 @@ export class AppController {
     }
 
     this.logger.log('Hello From Marco! 😁');
+  }
+
+  @Get('healthz')
+  @TracedMetadata([{ name: 'namespace', value: 'healthz' }])
+  async health() {
+    this.logger.log('Marco is health!!! 😁');
   }
 }

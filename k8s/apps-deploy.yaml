@@ -55,6 +55,21 @@ spec:
                   key: "AMQP_URL"
           ports:
             - containerPort: 3000
+          livenessProbe:
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            periodSeconds: 15
+            httpGet:
+              path: /api/marco/healthz
+              port: 3000
+              httpHeaders:
+                - name: X-My-Header
+                  value: all-good
+          readinessProbe:
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            tcpSocket:
+              port: 3000
 
 ---
 apiVersion: v1
@@ -129,7 +144,21 @@ spec:
                   key: "AMQP_URL"
           ports:
             - containerPort: 3000
-
+          livenessProbe:
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            periodSeconds: 15
+            httpGet:
+              path: /api/polo/healthz
+              port: 3000
+              httpHeaders:
+                - name: X-My-Header
+                  value: all-good
+          readinessProbe:
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            tcpSocket:
+              port: 3000
 ---
 apiVersion: v1
 kind: Service
