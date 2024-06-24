@@ -40,51 +40,14 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "500m"
+          envFrom:
+            - configMapRef:
+                name: "common-marco-polo-config"
           env:
             - name: SERVICE_NAME
               value: "marco"
             - name: ROUTE_PREFIX
               value: "api/marco"
-            - name: PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: PORT
-            - name: NODE_ENV
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: NODE_ENV
-            - name: LOG_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: LOG_LEVEL
-            - name: LOG_FORMAT
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: LOG_FORMAT
-            - name: MARCO_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: MARCO_URL
-            - name: POLO_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: POLO_URL
-            - name: ENABLE_OTEL
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: ENABLE_OTEL
-            - name: BASE_URL_OTEL_COLLECTOR
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: BASE_URL_OTEL_COLLECTOR
             - name: AMQP_URL
               valueFrom:
                 secretKeyRef:
@@ -151,51 +114,14 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "500m"
+          envFrom:
+            - configMapRef:
+                name: "common-marco-polo-config"
           env:
             - name: SERVICE_NAME
               value: "polo"
             - name: ROUTE_PREFIX
               value: "api/polo"
-            - name: PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: PORT
-            - name: NODE_ENV
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: NODE_ENV
-            - name: LOG_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: LOG_LEVEL
-            - name: LOG_FORMAT
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: LOG_FORMAT
-            - name: MARCO_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: MARCO_URL
-            - name: POLO_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: POLO_URL
-            - name: ENABLE_OTEL
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: ENABLE_OTEL
-            - name: BASE_URL_OTEL_COLLECTOR
-              valueFrom:
-                configMapKeyRef:
-                  name: "common-marco-polo-config"
-                  key: BASE_URL_OTEL_COLLECTOR
             - name: AMQP_URL
               valueFrom:
                 secretKeyRef:
