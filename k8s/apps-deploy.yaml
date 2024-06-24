@@ -32,14 +32,19 @@ spec:
         app: marco
         fluentd.logger: "true"
     spec:
+      terminationGracePeriodSeconds: 60
+      automountServiceAccountToken: false
       containers:
         - name: marco-app
           image: gm50x/marco
           imagePullPolicy: Always
           resources:
+            requests:
+              memory: "100Mi"
+              cpu: "10m"
             limits:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "50m"
           envFrom:
             - configMapRef:
                 name: "common-marco-polo-config"
@@ -70,7 +75,32 @@ spec:
             periodSeconds: 10
             tcpSocket:
               port: 3000
-
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: marco-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: marco
+  minReplicas: 1
+  maxReplicas: 5
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 60
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 300
 ---
 apiVersion: v1
 kind: Service
@@ -121,14 +151,19 @@ spec:
         app: polo
         fluentd.logger: "true"
     spec:
+      terminationGracePeriodSeconds: 60
+      automountServiceAccountToken: false
       containers:
         - name: polo-app
           image: gm50x/polo
           imagePullPolicy: Always
           resources:
+            requests:
+              memory: "100Mi"
+              cpu: "10m"
             limits:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "50m"
           envFrom:
             - configMapRef:
                 name: "common-marco-polo-config"
@@ -159,6 +194,32 @@ spec:
             periodSeconds: 10
             tcpSocket:
               port: 3000
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: polo-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: polo
+  minReplicas: 1
+  maxReplicas: 5
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 60
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
 ---
 apiVersion: v1
 kind: Service
